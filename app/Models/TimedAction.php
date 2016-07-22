@@ -29,12 +29,13 @@ class TimedAction extends Model
      * @var string[]
      */
     protected $casts = [
-        'name'               => 'string',
-        'description'        => 'string',
-        'active'             => 'bool',
-        'timezone'           => 'string',
-        'schedule_frequency' => 'int',
-        'completion_latency' => 'int',
+        'name'                  => 'string',
+        'timed_action_group_id' => 'int',
+        'description'           => 'string',
+        'active'                => 'bool',
+        'timezone'              => 'string',
+        'schedule_frequency'    => 'int',
+        'completion_latency'    => 'int',
     ];
 
     /**
@@ -44,6 +45,7 @@ class TimedAction extends Model
      */
     protected $fillable = [
         'name',
+        'timed_action_group_id',
         'description',
         'active',
         'timezone',
@@ -59,12 +61,13 @@ class TimedAction extends Model
      * @var string[]
      */
     public $rules = [
-        'name'               => 'string|required',
-        'description'        => 'string',
-        'active'             => 'bool',
-        'timezone'           => 'string',
-        'schedule_frequency' => 'int',
-        'completion_latency' => 'int',
+        'timed_action_group_id' => 'int',
+        'name'                  => 'string|required',
+        'description'           => 'string',
+        'active'                => 'bool',
+        'timezone'              => 'string',
+        'schedule_frequency'    => 'int',
+        'completion_latency'    => 'int',
     ];
 
     /**
@@ -75,5 +78,15 @@ class TimedAction extends Model
     public function responses()
     {
         return $this->hasMany(TimedActionResponse::class);
+    }
+
+    /**
+     * Get the group relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(TimedActionGroup::class);
     }
 }
