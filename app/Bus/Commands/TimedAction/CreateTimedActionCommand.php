@@ -11,12 +11,14 @@
 
 namespace CachetHQ\Cachet\Bus\Commands\TimedAction;
 
+use CachetHQ\Cachet\Models\TimedActionGroup;
+
 /**
  * This is the create timed action command class.
  *
  * @author James Brooks <james@alt-three.com>
  */
-class CreateTimedActionCommand
+final class CreateTimedActionCommand
 {
     /**
      * The name of the timed action.
@@ -61,18 +63,26 @@ class CreateTimedActionCommand
     public $completion_latency;
 
     /**
+     * The group in which to place the timed action.
+     *
+     * @var \CachetHQ\Cachet\Models\TimedActionGroup|null
+     */
+    public $group;
+
+    /**
      * Create a new created timed action command instance.
      *
-     * @param string $name
-     * @param string $description
-     * @param bool   $active
-     * @param string $timezone
-     * @param int    $schedule_frequency
-     * @param int    $completion_latency
+     * @param string                                        $name
+     * @param string                                        $description
+     * @param bool                                          $active
+     * @param string                                        $timezone
+     * @param int                                           $schedule_frequency
+     * @param int                                           $completion_latency
+     * @param \CachetHQ\Cachet\Models\TimedActionGroup|null $group
      *
      * @return void
      */
-    public function __construct($name, $description, $active, $timezone, $schedule_frequency, $completion_latency)
+    public function __construct($name, $description, $active, $timezone, $schedule_frequency, $completion_latency, TimedActionGroup $group = null)
     {
         $this->name = $name;
         $this->description = $description;
@@ -80,5 +90,6 @@ class CreateTimedActionCommand
         $this->timezone = $timezone;
         $this->schedule_frequency = $schedule_frequency;
         $this->completion_latency = $completion_latency;
+        $this->group = $group;
     }
 }
