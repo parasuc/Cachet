@@ -12,9 +12,9 @@
 namespace CachetHQ\Tests\Cachet\Bus\Commands\Subscriber;
 
 use AltThree\TestBench\CommandTrait;
-use CachetHQ\Cachet\Models\TimedActionGroup;
 use CachetHQ\Cachet\Bus\Commands\TimedAction\CreateTimedActionCommand;
 use CachetHQ\Cachet\Bus\Handlers\Commands\TimedAction\CreateTimedActionCommandHandler;
+use CachetHQ\Cachet\Models\TimedActionGroup;
 use CachetHQ\Tests\Cachet\AbstractTestCase;
 
 /**
@@ -22,7 +22,7 @@ use CachetHQ\Tests\Cachet\AbstractTestCase;
  *
  * @author James Brooks <james@alt-three.com>
  */
-class CreateTimedActionCommandTest extends AbstractTestCase
+class CreatedTimedActionCommandTest extends AbstractTestCase
 {
     use CommandTrait;
 
