@@ -12,11 +12,13 @@
 namespace CachetHQ\Cachet\Http\Controllers\Dashboard;
 
 use AltThree\Validator\ValidationException;
+use CachetHQ\Cachet\Bus\Events\User\UserDisabledTwoAuthEvent;
+use CachetHQ\Cachet\Bus\Events\User\UserEnabledTwoAuthEvent;
+use CachetHQ\Cachet\Bus\Events\User\UserRegeneratedApiTokenEvent;
 use CachetHQ\Cachet\Models\User;
 use GrahamCampbell\Binput\Facades\Binput;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 use PragmaRX\Google2FA\Vendor\Laravel\Facade as Google2FA;
 
@@ -46,21 +48,23 @@ class UserController extends Controller
 
         // Let's enable/disable auth
         if ($enable2FA && !Auth::user()->hasTwoFactor) {
+            event(new UserEnabledTwoAuthEvent(Auth::user()));
             $userData['google_2fa_secret'] = Google2FA::generateSecretKey();
         } elseif (!$enable2FA) {
+            event(new UserDisabledTwoAuthEvent(Auth::user()));
             $userData['google_2fa_secret'] = '';
         }
 
         try {
             Auth::user()->update($userData);
         } catch (ValidationException $e) {
-            return Redirect::route('dashboard.user')
+            return cachet_redirect('dashboard.user')
                 ->withInput($userData)
                 ->withTitle(sprintf('%s %s', trans('dashboard.notifications.whoops'), trans('dashboard.team.edit.failure')))
                 ->withErrors($e->getMessageBag());
         }
 
-        return Redirect::route('dashboard.user')
+        return cachet_redirect('dashboard.user')
             ->withSuccess(sprintf('%s %s', trans('dashboard.notifications.awesome'), trans('dashboard.team.edit.success')));
     }
 
@@ -76,6 +80,8 @@ class UserController extends Controller
         $user->api_key = User::generateApiKey();
         $user->save();
 
-        return Redirect::route('dashboard.user');
+        event(new UserRegeneratedApiTokenEvent($user));
+
+        return cachet_redirect('dashboard.user');
     }
 }

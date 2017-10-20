@@ -11,13 +11,38 @@
 
 namespace CachetHQ\Cachet\Http\Middleware;
 
+use CachetHQ\Cachet\Settings\Repository;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Redirect;
 
+/**
+ * This is the setup already completed middelware class.
+ *
+ * @author Graham Campbell <james@alt-three.com>
+ * @author James Brooks <james@alt-three.com>
+ * @author Joseph Cohen <joe@alt-three.com>
+ */
 class SetupAlreadyCompleted
 {
+    /**
+     * The settings repository instance.
+     *
+     * @var \CachetHQ\Cachet\Settings\Repository
+     */
+    protected $settings;
+
+    /**
+     * Creates a new setup already completed middleware instance.
+     *
+     * @param \CachetHQ\Cachet\Settings\Repository $settings
+     *
+     * @return void
+     */
+    public function __construct(Repository $settings)
+    {
+        $this->settings = $settings;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -28,8 +53,8 @@ class SetupAlreadyCompleted
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Config::get('setting.app_name')) {
-            return Redirect::to('dashboard');
+        if ($this->settings->get('app_name')) {
+            return cachet_redirect('dashboard');
         }
 
         return $next($request);

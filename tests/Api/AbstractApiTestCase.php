@@ -19,6 +19,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
  * This is the abstract api test case class.
  *
  * @author Graham Campbell <graham@alt-three.com>
+ * @author James Brooks <james@alt-three.com>
  */
 abstract class AbstractApiTestCase extends AbstractTestCase
 {
@@ -26,6 +27,8 @@ abstract class AbstractApiTestCase extends AbstractTestCase
 
     /**
      * Become a user.
+     *
+     * @return void
      */
     protected function beUser()
     {

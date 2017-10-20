@@ -11,7 +11,7 @@
 
 namespace CachetHQ\Cachet\Http\Controllers\Api;
 
-use CachetHQ\Cachet\Bus\Commands\Component\AddComponentCommand;
+use CachetHQ\Cachet\Bus\Commands\Component\CreateComponentCommand;
 use CachetHQ\Cachet\Bus\Commands\Component\RemoveComponentCommand;
 use CachetHQ\Cachet\Bus\Commands\Component\UpdateComponentCommand;
 use CachetHQ\Cachet\Models\Component;
@@ -29,7 +29,7 @@ class ComponentController extends AbstractApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getComponents()
+    public function index()
     {
         if (app(Guard::class)->check()) {
             $components = Component::query();
@@ -57,7 +57,7 @@ class ComponentController extends AbstractApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getComponent(Component $component)
+    public function show(Component $component)
     {
         return $this->item($component);
     }
@@ -67,17 +67,18 @@ class ComponentController extends AbstractApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function postComponents()
+    public function store()
     {
         try {
-            $component = dispatch(new AddComponentCommand(
+            $component = dispatch(new CreateComponentCommand(
                 Binput::get('name'),
                 Binput::get('description'),
                 Binput::get('status'),
                 Binput::get('link'),
                 Binput::get('order'),
                 Binput::get('group_id'),
-                (bool) Binput::get('enabled', true)
+                (bool) Binput::get('enabled', true),
+                Binput::get('meta', null)
             ));
         } catch (QueryException $e) {
             throw new BadRequestHttpException();
@@ -107,7 +108,7 @@ class ComponentController extends AbstractApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function putComponent(Component $component)
+    public function update(Component $component)
     {
         try {
             dispatch(new UpdateComponentCommand(
@@ -118,7 +119,9 @@ class ComponentController extends AbstractApiController
                 Binput::get('link'),
                 Binput::get('order'),
                 Binput::get('group_id'),
-                (bool) Binput::get('enabled', true)
+                (bool) Binput::get('enabled', true),
+                Binput::get('meta', null),
+                (bool) Binput::get('silent', false)
             ));
         } catch (QueryException $e) {
             throw new BadRequestHttpException();
@@ -145,7 +148,7 @@ class ComponentController extends AbstractApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteComponent(Component $component)
+    public function destroy(Component $component)
     {
         dispatch(new RemoveComponentCommand($component));
 

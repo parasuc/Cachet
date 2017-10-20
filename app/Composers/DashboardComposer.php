@@ -14,9 +14,16 @@ namespace CachetHQ\Cachet\Composers;
 use CachetHQ\Cachet\Models\Component;
 use CachetHQ\Cachet\Models\Incident;
 use CachetHQ\Cachet\Models\IncidentTemplate;
+use CachetHQ\Cachet\Models\Schedule;
 use CachetHQ\Cachet\Models\Subscriber;
 use Illuminate\Contracts\View\View;
 
+/**
+ * This is the dashboard composer class.
+ *
+ * @author James Brooks <james@alt-three.com>
+ * @author Graham Campbell <graham@alt-three.com>
+ */
 class DashboardComposer
 {
     /**
@@ -28,9 +35,11 @@ class DashboardComposer
      */
     public function compose(View $view)
     {
-        $view->withIncidentCount(Incident::notScheduled()->count());
+        $view->withComponentCount(Component::count());
+        $view->withIncidentCount(Incident::count());
         $view->withIncidentTemplateCount(IncidentTemplate::count());
-        $view->withComponentCount(Component::all()->count());
+        $view->withScheduleCount(Schedule::count());
         $view->withSubscriberCount(Subscriber::isVerified()->count());
+        $view->withIsWriteable(is_writable(app()->bootstrapPath().'/cachet'));
     }
 }

@@ -14,6 +14,7 @@ return [
     'components' => [
         'last_updated' => 'Last updated :timestamp',
         'status'       => [
+            0 => 'Unknown',
             1 => 'Operational',
             2 => 'Performance Issues',
             3 => 'Partial Outage',
@@ -26,14 +27,13 @@ return [
 
     // Incidents
     'incidents' => [
-        'none'          => 'No incidents reported',
-        'past'          => 'Past Incidents',
-        'previous_week' => 'Previous Week',
-        'next_week'     => 'Next Week',
-        'scheduled'     => 'Scheduled Maintenance',
-        'scheduled_at'  => ', scheduled :timestamp',
-        'status'        => [
-            0 => 'Scheduled', // TODO: Hopefully remove this.
+        'none'         => 'No incidents reported',
+        'past'         => 'Past Incidents',
+        'stickied'     => 'Stickied Incidents',
+        'scheduled'    => 'Maintenance',
+        'scheduled_at' => ', scheduled :timestamp',
+        'posted'       => 'Posted :timestamp',
+        'status'       => [
             1 => 'Investigating',
             2 => 'Identified',
             3 => 'Watching',
@@ -41,11 +41,20 @@ return [
         ],
     ],
 
+    // Schedule
+    'schedules' => [
+        'status' => [
+            0 => 'Upcoming',
+            1 => 'In Progress',
+            2 => 'Complete',
+        ],
+    ],
+
     // Service Status
     'service' => [
-        'good'  => '[0,1] System operational|[2,Inf] All systems are operational',
-        'bad'   => '[0,1] The system is currently experiencing issues|[2,Inf] Some systems are experiencing issues',
-        'major' => '[0,1] The service experiencing a major outage|[2,Inf] Some systems are experiencing a major outage',
+        'good'  => '[0,1]System operational|[2,Inf] All systems are operational',
+        'bad'   => '[0,1]The system is experiencing issues|[2,Inf]Some systems are experiencing issues',
+        'major' => '[0,1]The system is experiencing major issues|[2,Inf]Some systems are experiencing major issues',
     ],
 
     'api' => [
@@ -65,9 +74,10 @@ return [
 
     // Subscriber
     'subscriber' => [
-        'subscribe' => 'Subscribe to get the most recent updates',
-        'button'    => 'Subscribe',
-        'manage'    => [
+        'subscribe'   => 'Subscribe to get the updates',
+        'unsubscribe' => 'Unsubscribe at :link',
+        'button'      => 'Subscribe',
+        'manage'      => [
             'no_subscriptions' => 'You\'re currently subscribed to all updates.',
             'my_subscriptions' => 'You\'re currently subscribed to the following updates.',
         ],
@@ -80,32 +90,6 @@ return [
             'unsubscribed'       => 'Your email subscription has been cancelled.',
             'failure'            => 'Something went wrong with the subscription.',
             'already-subscribed' => 'Cannot subscribe :email because they\'re already subscribed.',
-            'verify'             => [
-                'text'   => "Please confirm your email subscription to :app_name status updates.\n:link",
-                'html'   => '<p>Please confirm your email subscription to :app_name status updates.</p>',
-                'button' => 'Confirm Subscription',
-            ],
-            'maintenance' => [
-                'subject' => '[Maintenance Scheduled] :name',
-            ],
-            'incident' => [
-                'subject' => '[New Incident] :status: :name',
-            ],
-            'component' => [
-                'subject'       => 'Component Status Update',
-                'text'          => 'The component :component_name has seen a status change. The component is now at :component_human_status.\nThank you, :app_name',
-                'html'          => '<p>The component :component_name has seen a status change. The component is now at :component_human_status.</p><p>Thank you, :app_name</p>',
-                'tooltip-title' => 'Subscribe to notifications for :component_name.',
-            ],
-        ],
-    ],
-
-    'users' => [
-        'email' => [
-            'invite' => [
-                'text'           => "You have been invited to the team :app_name status page, to sign up follow the next link.\n:link\nThank you, :app_name",
-                'html'           => '<p>You have been invited to the team :app_name status page, to sign up follow the next link.</p><p><a href=":link">:link</a></p><p>Thank you, :app_name</p>',
-            ],
         ],
     ],
 
@@ -136,6 +120,7 @@ return [
     'home'            => 'Home',
     'description'     => 'Stay up to date with the latest service updates from :app.',
     'powered_by'      => 'Powered by <a href="https://cachethq.io" class="links">Cachet</a>.',
+    'timezone'        => 'Times are shown in :timezone.',
     'about_this_site' => 'About This Site',
     'rss-feed'        => 'RSS',
     'atom-feed'       => 'Atom',

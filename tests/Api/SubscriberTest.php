@@ -11,6 +11,8 @@
 
 namespace CachetHQ\Tests\Cachet\Api;
 
+use Illuminate\Support\Facades\Notification;
+
 /**
  * This is the subscriber test class.
  *
@@ -41,6 +43,8 @@ class SubscriberTest extends AbstractApiTestCase
     {
         $this->beUser();
 
+        Notification::fake();
+
         $this->expectsEvents('CachetHQ\Cachet\Bus\Events\Subscriber\SubscriberHasSubscribedEvent');
 
         $this->post('/api/v1/subscribers', [
@@ -48,12 +52,16 @@ class SubscriberTest extends AbstractApiTestCase
         ]);
         $this->assertResponseOk();
         $this->seeHeader('Content-Type', 'application/json');
-        $this->seeJson(['email' => 'support@alt-three.com']);
+        $this->seeJsonContains(['email' => 'support@alt-three.com']);
     }
 
     public function testCreateSubscriberAutoVerified()
     {
         $this->beUser();
+
+        Notification::fake();
+
+        $this->expectsEvents('CachetHQ\Cachet\Bus\Events\Subscriber\SubscriberHasSubscribedEvent');
 
         $this->post('/api/v1/subscribers', [
             'email'  => 'support@alt-three.com',
@@ -61,7 +69,7 @@ class SubscriberTest extends AbstractApiTestCase
         ]);
         $this->assertResponseOk();
         $this->seeHeader('Content-Type', 'application/json');
-        $this->seeJson(['email' => 'support@alt-three.com']);
+        $this->seeJsonContains(['email' => 'support@alt-three.com']);
     }
 
     public function testCreateSubscriberWithSubscriptions()
@@ -73,15 +81,20 @@ class SubscriberTest extends AbstractApiTestCase
         $this->post('/api/v1/subscribers', [
             'email'         => 'support@alt-three.com',
             'verify'        => true,
-            'subscriptions' => [
+            'components'    => [
                 1,
-                2,
                 3,
             ],
         ]);
         $this->assertResponseOk();
         $this->seeHeader('Content-Type', 'application/json');
-        $this->seeJson(['email' => 'support@alt-three.com']);
+        $this->seeJsonContains(['email' => 'support@alt-three.com']);
+        $this->seeJsonStructure(['data' => ['subscriptions' => []]]);
+
+        $data = $this->decodeResponseJson();
+        $this->assertCount(2, $data['data']['subscriptions']);
+        $this->assertEquals(1, $data['data']['subscriptions'][0]['component_id']);
+        $this->assertEquals(3, $data['data']['subscriptions'][1]['component_id']);
     }
 
     public function testDeleteSubscriber()

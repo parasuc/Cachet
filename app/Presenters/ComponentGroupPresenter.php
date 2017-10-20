@@ -81,7 +81,7 @@ class ComponentGroupPresenter extends BasePresenter implements Arrayable
 
         return $this->wrappedObject->components->filter(function ($component) {
             return $component->status > 1;
-        })->count() === 0;
+        })->isEmpty();
     }
 
     /**
@@ -96,5 +96,28 @@ class ComponentGroupPresenter extends BasePresenter implements Arrayable
             'updated_at'          => $this->updated_at(),
             'lowest_human_status' => $this->lowest_human_status(),
         ]);
+    }
+
+    /**
+     * Determine if any of the contained components have active subscriptions.
+     *
+     * @return bool
+     */
+    public function has_subscriber($subscriptions)
+    {
+        $enabled_components = $this->wrappedObject->enabled_components()->orderBy('order')->pluck('id')->toArray();
+        $intersected = array_intersect($enabled_components, $subscriptions);
+
+        return count($intersected) != 0;
+    }
+
+    /**
+     * Determine the class for collapsed/uncollapsed groups on the subscription form.
+     *
+     * @return string
+     */
+    public function collapse_class_with_subscriptions($subscriptions)
+    {
+        return $this->has_subscriber($subscriptions) ? 'ion-ios-minus-outline' : 'ion-ios-plus-outline';
     }
 }

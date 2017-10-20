@@ -34,6 +34,8 @@ class Tag extends Model
 
     /**
      * Overrides the models boot method.
+     *
+     * @return void
      */
     public static function boot()
     {
@@ -45,7 +47,7 @@ class Tag extends Model
     }
 
     /**
-     * Tags can have many components.
+     * Get the components relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

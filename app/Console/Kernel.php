@@ -11,11 +11,21 @@
 
 namespace CachetHQ\Cachet\Console;
 
+use CachetHQ\Cachet\Console\Commands\BeaconCommand;
 use CachetHQ\Cachet\Console\Commands\DemoMetricPointSeederCommand;
 use CachetHQ\Cachet\Console\Commands\DemoSeederCommand;
+use CachetHQ\Cachet\Console\Commands\InstallCommand;
+use CachetHQ\Cachet\Console\Commands\VersionCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * This is the console kernel class.
+ *
+ * @author Graham Campbell <graham@alt-three.com>
+ * @author Joseph Cohen <joe@alt-three.com>
+ * @author James Brooks <james@alt-three.com>
+ */
 class Kernel extends ConsoleKernel
 {
     /**
@@ -24,8 +34,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        BeaconCommand::class,
         DemoMetricPointSeederCommand::class,
         DemoSeederCommand::class,
+        InstallCommand::class,
+        VersionCommand::class,
     ];
 
     /**
@@ -37,6 +50,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('queue:work --sleep=3 --tries=3')->everyMinute();
+        $schedule->command('cachet:beacon')->twiceDaily(0, 12);
     }
 }

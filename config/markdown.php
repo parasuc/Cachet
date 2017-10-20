@@ -39,7 +39,10 @@ return [
     |
     */
 
-    'extensions' => env('CACHET_EMOJI', false) ? ['AltThree\Emoji\EmojiExtension'] : [],
+    'extensions' => array_filter([
+        env('CACHET_EMOJI', false) ? 'AltThree\Emoji\EmojiExtension' : null,
+        env('CACHET_AUTO_TWITTER', true) ? 'AltThree\Twitter\TwitterExtension' : null,
+    ]),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,7 +62,7 @@ return [
     'renderer' => [
         'block_separator' => "\n",
         'inner_separator' => "\n",
-        'soft_break'      => "\n",
+        'soft_break'      => "\n\n",
     ],
 
     /*

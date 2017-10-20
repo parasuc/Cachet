@@ -59,11 +59,11 @@ class MetricPoint extends Model implements HasPresenter
      * @var string[]
      */
     public $rules = [
-        'value' => 'numeric|required',
+        'value' => 'required|numeric',
     ];
 
     /**
-     * A metric point belongs to a metric unit.
+     * Get the metric relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -82,8 +82,6 @@ class MetricPoint extends Model implements HasPresenter
     public function getActiveValueAttribute($value)
     {
         if ($this->metric->calc_type === Metric::CALC_SUM) {
-            return round((float) $value * $this->counter, $this->metric->places);
-        } elseif ($this->metric->calc_type === Metric::CALC_AVG) {
             return round((float) $value * $this->counter, $this->metric->places);
         }
 
